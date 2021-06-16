@@ -1,0 +1,5 @@
+du bas niveau qui gère une requête http, son chemin d'arriver et en tête.
+Première partie en string et seconde en stream.
+
+
+ndjson en sortie.

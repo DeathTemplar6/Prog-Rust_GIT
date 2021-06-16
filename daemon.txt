@@ -1,0 +1,2 @@
+méthode lire un tar.ball avec path fixe
+localhost pour le démon :3030

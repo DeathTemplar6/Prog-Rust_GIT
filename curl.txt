@@ -1,0 +1,131 @@
+[windows]
+(tar)
+$person = @{
+	jsonrpc='2.0'
+	method='LogAnalysis'
+	params= @{ file_name= 'xensource.tar.gz'
+			query= 'error'}
+	id=1
+}
+$json = $person | ConvertTo-Json
+Invoke-RestMethod 'http://localhost:3030' -Method POST -Body $json -ContentType 'application/json'
+
+
+(log file)
+$person = @{
+	jsonrpc='2.0'
+	method='LogAnalysis'
+	params= @{ file_name= 'log.log'
+			query= 'error'}
+	id=1
+}
+$json = $person | ConvertTo-Json
+Invoke-RestMethod 'http://localhost:3030' -Method POST -Body $json -ContentType 'application/json'
+
+
+
+
+
+(multipart data)
+
+$FilePath = 'c:\temp\temp.png';
+
+$fileBytes = [System.IO.File]::ReadAllBytes($FilePath);
+$fileEnc = [System.Text.Encoding]::GetEncoding('UTF-8').GetString($fileBytes);
+$boundary = [System.Guid]::NewGuid().ToString(); 
+$LF = "`r`n";
+
+$bodyLines = @" 
+    --$boundary
+    Content-Disposition: form-data; name="file"; filename="temp.png"
+    Content-Type: application/octet-stream$LF"
+    $fileEnc
+    --$boundary--$LF
+"@   -join $LF
+
+Invoke-RestMethod 'http://localhost:8080' -Method Post -ContentType "multipart/form-data; boundary="$boundary"" -Body $bodyLines
+
+
+
+$filePath = 'c:\temp\backup_report_user.eml'
+$fileBytes = [System.IO.File]::ReadAllBytes($filePath)
+$fileEnc = [System.Text.Encoding]::GetEncoding('UTF-8').GetString($fileBytes)
+$boundary = [System.Guid]::NewGuid().ToString()
+$lineFeed = "`r`n"
+$body = ( 
+    "--$boundary",
+    "Content-Disposition: form-data; name=`"customAsset`"; filename=`"@backup_report_user.eml`"",
+    "Content-Type: application/octet-stream$lineFeed",
+    $fileEnc,
+    "--$boundary--$lineFeed" 
+) -join $lineFeed
+Invoke-RestMethod 'http://localhost:8080' -ContentType "multipart/form-data; boundary=`"$boundary`"" -Body $body -Headers $headersAuth -Method PUT
+
+
+
+
+
+[linux]
+curl -X POST -H @{ "Content-Type" = "application/json"} -d '{"jsonrpc": "2.0", "method": "say_hello", "id":1 }' 192.168.1.1:3030
+
+
+
+
+
+
+
+
+$Uri = 'http://localhost:8080'
+$Form = @{
+    file     = Get-Item -Path 'c:\temp\temp.png'
+}
+$Result = Invoke-RestMethod -Uri $Uri -Method Post -Form $Form
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$FilePath = "c:\temp\temp.png"
+$CurlExecutable = "C:\curl-7.77.0-win64-mingw\bin\curl.exe"
+
+$CurlArguments = '--request', 'POST', 
+                'http://localhost:8080',
+                '--header', "'content-type: multipart/form-data'",
+                '--form', "file=@$FilePath",
+                '-v'
+
+# Debug the above variables to see what's going to be executed
+Write-Host "FilePath" $FilePath
+Write-Host "CurlExecutable" $FilePath
+Write-Host "CurlArguments" $CurlArguments
+
+# Execute the curl command with its arguments
+& $CurlExecutable @CurlArguments
+
+
+
+
+$curlExecutable = "C:\curl-7.77.0-win64-mingw\bin\curl.exe"
+$path = "C:\temp"
+
+Write-Host "CurlFile" $curlExecutable
+$curlArguments = "--request", "POST", 
+                 "http://localhost:8080",
+		 "--header", "content-type: multipart/form-data",
+                 "--form", "file=@$path",
+		 "-v"
+
+& $curlExecutable $curlArguments    
+
+
+curl --request POST --url http://localhost:8080 --header 'content-type: multipart/form-data' --form 'file=@$FilePath' -v

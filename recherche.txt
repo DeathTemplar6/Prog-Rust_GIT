@@ -1,0 +1,5 @@
+promesse callback (js)
+chainer les callback.
+cig jinp
+cig long jinp
+co routine
