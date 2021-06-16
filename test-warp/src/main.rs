@@ -14,6 +14,7 @@ async fn main() {
         .and(warp::post())
         .and(warp::multipart::form().max_length(5_000_000))
         .and_then(upload);
+        
     let download_route = warp::path("files").and(warp::fs::dir("./files/"));
 
     let router = upload_route.or(download_route).recover(handle_rejection);
@@ -21,23 +22,25 @@ async fn main() {
     warp::serve(router).run(([0, 0, 0, 0], 8080)).await;
 }
 
+
 async fn upload(form: FormData) -> Result<impl Reply, Rejection> {
     let parts: Vec<Part> = form.try_collect().await.map_err(|e| {
         eprintln!("form error: {}", e);
         warp::reject::reject()
     })?;
 
+    let mut querries = Vec::new();
     for p in parts {
         if p.name() == "file" {
             let content_type = p.content_type();
             let file_ending;
             match content_type {
                 Some(file_type) => match file_type {
-                    "application/pdf" => {
-                        file_ending = "pdf";
+                    "application/octet-stream" => {
+                        file_ending = "tar.gz";
                     }
-                    "image/png" => {
-                        file_ending = "png";
+                    "text/plain" => {
+                        file_ending = "log";
                     }
                     v => {
                         eprintln!("invalid file type found: {}", v);
@@ -49,6 +52,12 @@ async fn upload(form: FormData) -> Result<impl Reply, Rejection> {
                     return Err(warp::reject::reject());
                 }
             }
+		
+	    let name = match p.filename(){
+	    	Some(x) => x.to_string(),
+	    	None => format!("{}.{}", Uuid::new_v4().to_string(), file_ending),
+	    };
+
 
             let value = p
                 .stream()
@@ -61,15 +70,29 @@ async fn upload(form: FormData) -> Result<impl Reply, Rejection> {
                     eprintln!("reading file error: {}", e);
                     warp::reject::reject()
                 })?;
+	    
+            let file_name = format!("./files/{}", name);
 
-            let file_name = format!("./files/{}.{}", Uuid::new_v4().to_string(), file_ending);
             tokio::fs::write(&file_name, value).await.map_err(|e| {
                 eprint!("error writing file: {}", e);
                 warp::reject::reject()
             })?;
             println!("created file: {}", file_name);
+        } else if p.name() == "querry" {
+        	querries.push(p.stream()
+                .try_fold(Vec::new(), |mut vec, data| {
+                    vec.put(data);
+                    async move { Ok(vec) }
+                })
+                .await
+                .map_err(|e| {
+                    eprintln!("reading file error: {}", e);
+                    warp::reject::reject()
+                })?);
         }
     }
+    
+    println!("{:?}", querries);
 
     Ok("success")
 }
