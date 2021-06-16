@@ -1,0 +1,22 @@
+Apr 29 11:36:57 xen-dmz2 xapi: [debug||189309 INET :::80|Get RRD updates. D:998f6868e9fe|xapi_services] hand_over_connection GET /rrd_updates to /var/lib/xcp/xcp-rrdd.forwarded
+Apr 29 11:37:02 xen-dmz2 xapi: [debug||189310 INET :::80|host.call_plugin R:b71938f9dd21|audit] Host.call_plugin host = 'de2d28d5-e51a-4b82-9e54-abb8c3133979 (xen-dmz2)'; plugin = 'updater.py'; fn = 'check_update' args = [ 'hidden' ]
+Apr 29 11:37:04 xen-dmz2 xenopsd-xc: [debug||5 ||xenops_server] Received an event on managed VM 2c488572-ea04-34a6-c33c-000000000001
+Apr 29 11:37:04 xen-dmz2 xenopsd-xc: [debug||5 |queue|xenops_server] Queue.push ["VM_check_state","2c488572-ea04-34a6-c33c-000000000001"] onto 2c488572-ea04-34a6-c33c-000000000001:[  ]
+Apr 29 11:37:04 xen-dmz2 xcp-rrdd: [ info||9 ||rrdd_main] memfree has changed to 321184 in domain 8
+Apr 29 11:37:04 xen-dmz2 xenopsd-xc: [debug||21 ||xenops_server] Queue.pop returned ["VM_check_state","2c488572-ea04-34a6-c33c-000000000001"]
+Apr 29 11:37:04 xen-dmz2 xenopsd-xc: [debug||21 |events|xenops_server] Task 224 reference events: ["VM_check_state","2c488572-ea04-34a6-c33c-000000000001"]
+Apr 29 11:37:04 xen-dmz2 xenopsd-xc: [ info||21 |events|xenops_server] Caught Xenops_interface.Xenopsd_error([S(Does_not_exist);[S(VM);S(2c488572-ea04-34a6-c33c-000000000001/config)]]) executing ["VM_check_state","2c488572-ea04-34a6-c33c-000000000001"]: triggering cleanup actions
+Apr 29 11:37:04 xen-dmz2 xenopsd-xc: [error||21 |events|task_server] Task 224 failed; Xenops_interface.Xenopsd_error([S(Does_not_exist);[S(VM);S(2c488572-ea04-34a6-c33c-000000000001/config)]])
+Apr 29 11:37:04 xen-dmz2 xenopsd-xc: [debug||21 ||xenops_server] TASK.signal 224 (object deleted)
+Apr 29 11:37:04 xen-dmz2 xapi: [debug||189313 INET :::80|Get RRD updates. D:3cbf09936703|xapi_services] hand_over_connection GET /rrd_updates to /var/lib/xcp/xcp-rrdd.forwarded
+Apr 29 11:37:09 xen-dmz2 xapi: [debug||168 scanning_thread|SR scanner D:d414db7278fa|xapi_sr] Automatically scanning SRs = [ OpaqueRef:d6e45993-31ce-4b15-941f-71a40bc3268b ]
+Apr 29 11:37:09 xen-dmz2 xapi: [debug||189314 ||dummytaskhelper] task scan one D:a87703e9944d created by task D:d414db7278fa
+Apr 29 11:37:09 xen-dmz2 xapi: [debug||189315 UNIX /var/lib/xcp/xapi||dummytaskhelper] task dispatch:session.slave_login D:246dbd173e00 created by task D:a87703e9944d
+Apr 29 11:37:09 xen-dmz2 xapi: [ info||189315 UNIX /var/lib/xcp/xapi|session.slave_login D:335cc776fb0f|xapi_session] Session.create trackid=404bd22a652bfaf61919818723c4f982 pool=true uname= originator=xapi is_local_superuser=true auth_user_sid= parent=trackid=9834f5af41c964e225f24279aefe4e49
+Apr 29 11:37:09 xen-dmz2 xapi: [debug||189316 UNIX /var/lib/xcp/xapi||dummytaskhelper] task dispatch:pool.get_all D:808ef0f860f6 created by task D:335cc776fb0f
+Apr 29 11:37:09 xen-dmz2 xapi: [debug||189317 UNIX /var/lib/xcp/xapi||dummytaskhelper] task dispatch:SR.scan D:8ee21f4c92f9 created by task D:a87703e9944d
+Apr 29 11:37:09 xen-dmz2 xapi: [ info||189317 UNIX /var/lib/xcp/xapi||taskhelper] task SR.scan R:35800478233e (uuid:12cdc340-ff2c-7e33-28d5-2eb2ea2e5a23) created (trackid=404bd22a652bfaf61919818723c4f982) by task D:a87703e9944d
+Apr 29 11:37:09 xen-dmz2 xapi: [debug||189317 UNIX /var/lib/xcp/xapi|SR.scan R:35800478233e|message_forwarding] SR.scan: SR = 'f9abc0d3-5301-f214-b696-fa73bdee502a (ISO Microsoft)'
+Apr 29 11:37:09 xen-dmz2 xapi: [debug||189317 UNIX /var/lib/xcp/xapi|SR.scan R:35800478233e|message_forwarding] Marking SR for SR.scan (task=OpaqueRef:35800478-233e-41aa-8cf1-76855fc97a90)
+Apr 29 11:37:09 xen-dmz2 xapi: [ info||189317 UNIX /var/lib/xcp/xapi|SR.scan R:35800478233e|storage_impl] SR.scan dbg:OpaqueRef:35800478-233e-41aa-8cf1-76855fc97a90 sr:f9abc0d3-5301-f214-b696-fa73bdee502a
+Apr 29 11:37:09 xen-dmz2 xapi: [debug||189318 ||dummytaskhelper] task SR.scan D:79ec95f736dd created by task R:35800478233e
