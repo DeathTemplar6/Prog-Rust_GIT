@@ -7,6 +7,7 @@ use warp::{
     multipart::{FormData, Part},
     Filter, Rejection, Reply,
 };
+use std::str;
 
 #[tokio::main]
 async fn main() {
@@ -29,7 +30,8 @@ async fn upload(form: FormData) -> Result<impl Reply, Rejection> {
         warp::reject::reject()
     })?;
 
-    let mut querries = Vec::new();
+    //let mut querries = Vec::new();
+    let mut querry_bin = Vec::new();
     for p in parts {
         if p.name() == "file" {
             let content_type = p.content_type();
@@ -79,20 +81,23 @@ async fn upload(form: FormData) -> Result<impl Reply, Rejection> {
             })?;
             println!("created file: {}", file_name);
         } else if p.name() == "querry" {
-        	querries.push(p.stream()
+        	querry_bin.push(p.stream()
                 .try_fold(Vec::new(), |mut vec, data| {
                     vec.put(data);
                     async move { Ok(vec) }
                 })
-                .await
+                .awaits
                 .map_err(|e| {
                     eprintln!("reading file error: {}", e);
                     warp::reject::reject()
                 })?);
+                	
         }
     }
     
-    println!("{:?}", querries);
+    let querries: Vec<_> = querry_bin.iter().map(|x| str::from_utf8(&x).unwrap()).collect();
+
+    println!("{:?}", querries);    
 
     Ok("success")
 }
