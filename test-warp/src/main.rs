@@ -81,7 +81,7 @@ async fn upload(form: FormData) -> Result<impl Reply, Rejection> {
             })?;
             println!("created file: {}", file_name);
         } else if p.name() == "querry" {
-        /*
+        
         	let mut fail = true;
         	match gather_binary(p) {
         		Ok(res) => querry_bin.push(res),
@@ -90,8 +90,8 @@ async fn upload(form: FormData) -> Result<impl Reply, Rejection> {
         	if fail == false{
         		warp::reject::reject();
         	}
-        	*/
         	
+        	/*
          	querry_bin.push(p.stream()
                 .try_fold(Vec::new(), |mut vec, data| {
                     vec.put(data);
@@ -102,18 +102,20 @@ async fn upload(form: FormData) -> Result<impl Reply, Rejection> {
                     eprintln!("reading file error: {}", e);
                     warp::reject::reject()
                 })?);
-                      	
+                */          	
         }
     }
-    let querries: Vec<_> = querry_bin.iter().map(|x| str::from_utf8(&x).unwrap()).collect();
+    let querries: Vec<_> = querry_bin.iter().map(|x| str::from_utf8(&x).unwrap()).collect();   
+    
+    let mut test = Vec::new();
+    test.push(querries);
+    test.push(vec!["a", "b", "c"]);
 
-    println!("{:?}", querries);    
-
-    Ok(warp::reply::json(&querries))
+    Ok(warp::reply::json(&test))
 }
 
 async fn gather_binary(p : Part) -> Result<Vec<u8>,Rejection> {
-	Ok(p.stream()
+	p.stream()
         .try_fold(Vec::new(), |mut vec, data| {
         	vec.put(data);
                 async move { Ok(vec) }
@@ -122,7 +124,7 @@ async fn gather_binary(p : Part) -> Result<Vec<u8>,Rejection> {
          .map_err(|e| {
                  eprintln!("reading file error: {}", e);
                  warp::reject::reject()
-         })?)
+         })?
 }
 
 
