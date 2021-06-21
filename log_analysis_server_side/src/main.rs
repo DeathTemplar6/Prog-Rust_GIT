@@ -61,7 +61,7 @@ async fn upload(form: FormData) -> Result<impl Reply, Rejection> {
 		
 			let name = match p.filename(){
 				Some(x) => x.to_string(),
-				None => format!("{}{}.{}", "file".to_string(), cpt_file, file_ending),
+				None => format!("{}{}.{}", "file".to_string(), cpt_file.to_string(), file_ending),
 			};
 			
 			let cpt_file = cpt_file + 1;
@@ -88,6 +88,8 @@ async fn upload(form: FormData) -> Result<impl Reply, Rejection> {
             println!("created file: {}", file_name);
         } 
     }
+	
+	
     //let querries: Vec<_> = querry_bin.iter().map(|x| str::from_utf8(&x).unwrap()).collect();   
     
     //let mut test = Vec::new();
