@@ -81,26 +81,50 @@ async fn upload(form: FormData) -> Result<impl Reply, Rejection> {
             })?;
             println!("created file: {}", file_name);
         } else if p.name() == "querry" {
-        	querry_bin.push(p.stream()
+        /*
+        	let mut fail = true;
+        	match gather_binary(p) {
+        		Ok(res) => querry_bin.push(res),
+        		Err(e) => fail = false,
+        	}
+        	if fail == false{
+        		warp::reject::reject();
+        	}
+        	*/
+        	
+         	querry_bin.push(p.stream()
                 .try_fold(Vec::new(), |mut vec, data| {
                     vec.put(data);
                     async move { Ok(vec) }
                 })
-                .awaits
+                .await
                 .map_err(|e| {
                     eprintln!("reading file error: {}", e);
                     warp::reject::reject()
                 })?);
-                	
+                      	
         }
     }
-    
     let querries: Vec<_> = querry_bin.iter().map(|x| str::from_utf8(&x).unwrap()).collect();
 
     println!("{:?}", querries);    
 
-    Ok("success")
+    Ok(warp::reply::json(&querries))
 }
+
+async fn gather_binary(p : Part) -> Result<Vec<u8>,Rejection> {
+	Ok(p.stream()
+        .try_fold(Vec::new(), |mut vec, data| {
+        	vec.put(data);
+                async move { Ok(vec) }
+         })
+         .await
+         .map_err(|e| {
+                 eprintln!("reading file error: {}", e);
+                 warp::reject::reject()
+         })?)
+}
+
 
 async fn handle_rejection(err: Rejection) -> std::result::Result<impl Reply, Infallible> {
     let (code, message) = if err.is_not_found() {
