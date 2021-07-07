@@ -19,17 +19,18 @@ async fn main() {
     let upload_route = warp::path("upload")
         .and(warp::post())
         .and(warp::multipart::form().max_length(5_000_000))
+		.and(warp::path::param())
         .and_then(upload);
         
     let download_route = warp::path("files").and(warp::fs::dir("./files/"));
 
     let router = upload_route.or(download_route).recover(handle_rejection);
-    println!("Server started at localhost:3030");
-    warp::serve(router).run(([0, 0, 0, 0], 3030)).await;
+    println!("Server started at localhost:8080");
+    warp::serve(router).run(([0, 0, 0, 0], 8080)).await;
 }
 
 
-async fn upload(form: FormData) -> Result<impl Reply, Rejection> {
+async fn upload(form: FormData, param: String) -> Result<impl Reply, Rejection> {
     let parts: Vec<Part> = form.try_collect().await.map_err(|e| {
         eprintln!("form error: {}", e);
         warp::reject::reject()
@@ -97,7 +98,7 @@ async fn upload(form: FormData) -> Result<impl Reply, Rejection> {
     //test.push(vec!["a", "b", "c"]);
 
     //Ok(warp::reply::json(&test))
-	Ok("succes")
+	Ok(param)
 }
 
 
